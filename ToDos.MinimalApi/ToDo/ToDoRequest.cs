@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,15 +59,26 @@ public static class ToDoRequest
         return Results.Ok(todo);
     }
 
-    public static IResult Create(IToDoService service, ToDo todo)
+    public static IResult Create(IToDoService service, ToDo todo, IValidator<ToDo> validator)
     {
+        var valresult = validator.Validate(todo);
+        if (!valresult.IsValid)
+        {
+            return Results.BadRequest(valresult.Errors);
+        }
         service.Create(todo);
 
         return Results.Created($"/todos/{todo.Id}",todo);
     }
 
-    public static IResult Update(IToDoService service, ToDo toDo,Guid id)
+    public static IResult Update(IToDoService service, ToDo toDo,Guid id, IValidator<ToDo> validator)
     {
+        var valresult = validator.Validate(toDo);
+        if (!valresult.IsValid)
+        {
+            return Results.BadRequest(valresult.Errors);
+        }
+
         var todo = service.GetById(id);
         if (todo == null)
         {
