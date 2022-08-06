@@ -12,24 +12,30 @@ public static class ToDoRequest
     public static WebApplication RegisterEndpoints( this WebApplication app)
     {
         app.MapGet("/todos", ToDoRequest.GetAll)
-            .Produces<List<ToDo>>();
+            .Produces<List<ToDo>>()
+            .WithTags("To Dos");
 
         app.MapGet("/todos/{id}", ToDoRequest.GetById)
             .Produces<ToDo>()
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .WithTags("To Dos");
 
         app.MapPost("/todos", ToDoRequest.Create)
             .Produces<ToDo>(StatusCodes.Status201Created)
-            .Accepts<ToDo>("application/json");
+            .Accepts<ToDo>("application/json")
+            .WithTags("To Dos");
 
         app.MapPut("/todos/{id}", ToDoRequest.Update)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
-            .Accepts<ToDo>("application/json");
+            .Accepts<ToDo>("application/json")
+            .WithTags("To Dos");
 
         app.MapDelete("/todos/{id}", ToDoRequest.Delete)
             .Produces(StatusCodes.Status204NoContent)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .WithTags("To Dos")
+            .ExcludeFromDescription();//hiding delete method in swagger
 
         return app;
     }
